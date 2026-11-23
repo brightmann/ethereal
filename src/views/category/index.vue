@@ -24,10 +24,11 @@ export default {
     },
     currentPage: {
       get() {
-        return this.$store.state.github.currentPage || 1
+        return Math.max(1, Number(this.$route.query.page) || 1)
       },
       set(val) {
-        this.$store.commit('github/setCurrentPage', val)
+        if (val !== this.currentPage)
+          this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: val } })
         window.scrollTo({
           top: 0,
           behavior: 'smooth',
@@ -38,14 +39,12 @@ export default {
   watch: {
     $route() {
       this.posts = []
-      this.currentPage = 1
       this.$store.commit('github/setCurrentCategory', this.$route.params.category || '')
       this.getPostsFn()
       this.getPostsCountFn()
     },
   },
   created() {
-    this.currentPage = 1
     this.$store.commit('github/setCurrentCategory', this.$route.params.category || '')
     this.getPostsFn()
     this.getPostsCountFn()
