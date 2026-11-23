@@ -1,5 +1,5 @@
 import config from '@/config'
-import { github, githubGraphql } from '@/utils/request'
+import { github } from '@/utils/request'
 
 const { username, repository, friendsRepo } = config
 const blog = `/repos/${username}/${repository}`
@@ -9,63 +9,21 @@ const friends = `/repos/${username}/${friendsRepo}`
  * 获取文章总数
  * @returns {Promise}
  */
+async function countIssues(query) {
+  const res = await github({ url: '/search/issues', params: { q: query, per_page: 1 } })
+  return { status: res.status, data: { data: { repository: { issues: { totalCount: res.data.total_count } } } } }
+}
+
 export function getPostsCountAPI() {
-  return githubGraphql({
-    method: 'post',
-    data: {
-      query: `
-        query {
-          repository(owner: "${username}", name: "${repository}") {
-            issues(states: OPEN) {
-              totalCount
-            }
-          }
-        }
-      `,
-    },
-  })
+  return countIssues(`repo:${username}/${repository} is:issue is:open`)
 }
 
-/**
- * 获取友链总数
- * @returns {Promise}
- */
 export function getFriendsCountAPI() {
-  return githubGraphql({
-    method: 'post',
-    data: {
-      query: `
-        query {
-          repository(owner: "${username}", name: "${friendsRepo}") {
-            issues(states:CLOSED) {
-              totalCount
-            }
-          }
-        }
-      `,
-    },
-  })
+  return Promise.resolve({ status: 200, data: { data: { repository: { issues: { totalCount: 0 } } } } })
 }
 
-/**
- * 获取灵感总数
- * @returns {Promise}
- */
 export function getInspirationCountAPI() {
-  return githubGraphql({
-    method: 'post',
-    data: {
-      query: `
-        query {
-          repository(owner:"${username}", name: "${repository}") {
-            issues(states:CLOSED, labels: ["Inspiration"]) {
-              totalCount
-            }
-          }
-        }
-      `,
-    },
-  })
+  return countIssues(`repo:${username}/${repository} is:issue is:closed label:Inspiration`)
 }
 
 /**
@@ -75,7 +33,7 @@ export function getInspirationCountAPI() {
  */
 export function searchPostsAPI({ q = '' }) {
   return github({
-    url: `/search/issues?q=${q}+is:issue+state:open+repo:${username}/${repository}&sort=created&order=asc&per_page=10&page=1`,
+    url: `/search/issues?q=${q}+is:issue+state:open+repo:${username}/${repository}&sort=created&order=desc&per_page=10&page=1`,
   })
 }
 
@@ -104,9 +62,9 @@ export function getTagsAPI() {
  * @param {*} param0 page, pageSize, filter
  * @returns Promise
  */
-export function getPostsAPI({ page = 1, pageSize = 12, filter = '' }) {
+export function getPostsAPI({ page = 1, pageSize = config.pageSize, filter = '' }) {
   return github({
-    url: `${blog}/issues?state=open&page=${page}&per_page=${pageSize}${filter}`,
+    url: `${blog}/issues?state=open&sort=created&direction=desc&page=${page}&per_page=${pageSize}${filter}`,
   })
 }
 
@@ -115,10 +73,8 @@ export function getPostsAPI({ page = 1, pageSize = 12, filter = '' }) {
  * @param {*} param0 page, pageSize, filter
  * @returns Promise
  */
-export function getFriendsAPI({ page = 1, pageSize = 12, filter = '' }) {
-  return github({
-    url: `${friends}/issues?state=closed&page=${page}&per_page=${pageSize}${filter}`,
-  })
+export function getFriendsAPI() {
+  return Promise.resolve({ status: 200, data: [] })
 }
 
 /**
@@ -126,7 +82,7 @@ export function getFriendsAPI({ page = 1, pageSize = 12, filter = '' }) {
  * @param {*} param0 page 当前页码 pageSize 每页数量
  * @returns Promise
  */
-export function getInspirationAPI({ page = 1, pageSize = 12 }) {
+export function getInspirationAPI({ page = 1, pageSize = config.pageSize }) {
   return github({
     url: `${blog}/issues?state=closed&labels=inspiration&page=${page}&per_page=${pageSize}`,
   })
