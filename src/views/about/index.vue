@@ -132,7 +132,7 @@ export default {
             <SvgIcon name="like" />
           </div>
         </div>
-        <figure class="alipay-qr">
+        <figure v-if="$config.alipay_qr" class="alipay-qr">
           <img :src="$config.alipay_qr" alt="支付宝二维码">
         </figure>
       </div>
