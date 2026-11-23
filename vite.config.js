@@ -16,7 +16,7 @@ const CDN = {
 
   ],
   js: [
-    config.twikoo.src,
+    ...(config.twikoo.src ? [config.twikoo.src] : []),
   ],
 }
 
@@ -46,7 +46,7 @@ export default defineConfig({
           favicon32: config.favicon32,
           url: config.url,
           css: isProduction ? CDN.css : [],
-          js: isProduction ? CDN.js : [config.twikoo.src],
+          js: CDN.js,
         },
       },
     }),
