@@ -121,19 +121,9 @@ export default {
         })
         throw new Error(err)
       })
-      this.relates = []
-      while (true) {
-        const len = postList.length
-        const index = Math.floor(Math.random() * len)
-        const post = postList[index]
-        const num = this.postNumber
-        if (this.relates.includes(post))
-          continue
-        if (post.number !== num)
-          this.relates.push(post)
-        if (this.relates.length >= LOOP)
-          break
-      }
+      this.relates = postList
+        .filter(post => Number(post.number) !== Number(this.postNumber))
+        .slice(0, LOOP)
     },
     initAllData() {
       this.post = {}
