@@ -38,14 +38,14 @@ export default {
   favicon16: './favicon.ico',
   favicon32: './favicon.ico',
   createdTime: '2019-08-01',
-  icp: '赣ICP备20000895号-1',
+  icp: '',
   icpLink: '//beian.miit.gov.cn/',
   beian: '',
   beianLink: '',
   // 关于页二维码
-  alipay_qr: '//cdn.wallleap.cn/img/custom/donate/alipayQr.jpg',
+  alipay_qr: '',
   // GitHub Issues 配置
-  username: 'briteming',
+  username: 'brightmann',
   repository: 'ethereal',
   friendsRepo: 'friends',
   // 您的信息
@@ -66,7 +66,7 @@ export default {
   // 评论配置
   utterances: {
     code: `<script src="https://utteranc.es/client.js"
-      repo="wallleap/comments"
+      repo="brightmann/ethereal"
       issue-term="title"
       label="Comment"
       theme="github-light"
@@ -75,8 +75,8 @@ export default {
     </script>`,
   },
   twikoo: {
-    src: '//cdn.staticfile.org/twikoo/1.6.22/twikoo.all.min.js',
+    src: '',
   },
   // Clarity 微软数据分析服务
-  clarity: 'jtdbmcusnq',
+  clarity: '',
 }
