@@ -4,7 +4,7 @@ const GITHUB_API = 'https://api.github.com'
 const POETRY_API = 'https://v2.jinrishici.com'
 
 const GitHub_Arr = import.meta.env.VITE_GITHUB_TOKEN?.split(', ')
-const GITHUB_TOKEN = GitHub_Arr.join('')
+const GITHUB_TOKEN = GitHub_Arr?.join('') || ''
 
 export const github = axios.create({
   baseURL: GITHUB_API,
@@ -34,7 +34,8 @@ export const poetry = axios.create({
  * @returns {Object}
  */
 github.interceptors.request.use((config) => {
-  config.headers.Authorization = `Bearer ${GITHUB_TOKEN}`
+  if (GITHUB_TOKEN)
+    config.headers.Authorization = `Bearer ${GITHUB_TOKEN}`
   return config
 }, (error) => {
   return Promise.reject(error)
